@@ -6,12 +6,12 @@ def getSecretKeys():
     """Returns only the secret manager environment variables"""
     secretKeys = {}
     for key, value in os.environ.items():
-        if key.startswith("SM_"):
+        if key.startswith("SSM_"):
             secretKeys[key] = value
     if secretKeys:
         return secretKeys
     else:
-        raise ValueError("Cannot find the Secrets Manager environment variable key, make sure there is atleast an env var with 'SM_' prefix for the init-container")
+        raise ValueError("Cannot find the Secrets Manager environment variable key, make sure there is atleast an env var with 'SSM_' prefix for the init-container")
 
 def getSecretFileName():
     try:
@@ -49,17 +49,9 @@ def loadSecret(prefix, secret_name, secretFile):
     print("Saving", secret_name, "secrets to", secretFile.name)
     data=get_secret(secret_name)
     secret = json.loads(data)
-    # Mocking the response for testing locally
-    # secret = {
-    #             "username": "admin",
-    #             "engine": "mysql",
-    #             "dbClusterIdentifier": "test-aurora-db",
-    #             "host": "test-aurora-db.cluster-xxxxxxxxxxxxxx.ap-southeast-1.rds.amazonaws.com",
-    #             "password": "8h?o[R;2qZMa)Tbq[Pt69AhjXFx#X$*>",
-    #             "port": 3306
-    #         }
+
     for key, value in secret.items():
-        secretFile.write(prefix + key.upper() + "=" + "'" + str(value) + "'" + "\n")
+        secretFile.write(key.upper() + "=" + "'" + str(value) + "'" + "\n")
     print("Done fetching secrets", secret_name)
 
 print("Running init container script")

@@ -27,7 +27,7 @@ spec:
         env:
         - name: SECRET_FILE_PATH
           value: "/secret/secret.env"
-        - name: SM_DB
+        - name: SSM_DB
           value: "demo-database-secret"
         - name: AWS_REGION
           value: "ap-southeast-1"

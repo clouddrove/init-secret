@@ -22,7 +22,7 @@ The init-secret container requires these env variables to work :
 
 **NOTE**
 
-- The name of the env should be in format `*SM_<.env-prefix>*`. For ex: `SM_DB` or `SM_SECRETS`
+- The name of the env should be in format `*SSM_<.env-prefix>*`. For ex: `SSM_DB` or `SSM_SECRETS`
 
 - All the keys fetched from secret manager will be converted to uppercase and prefixed with `env-prefix`. For example - if the env var for the init-container is `SM_DB` then the key for `password` would be `DB_PASSWORD`.
   
@@ -36,14 +36,7 @@ Create a secret in AWS Secret Manager like below, follow [this AWS guide](https:
 
 ![AWS Secrets Manager](images/AWSSecretsManager.JPG?raw=true "AWS Secrets Manager")
 
-## Build your own docker image
 
-To build your own docker image for init-container simply clone this repository and run below docker commands:
-
-```console
-➜  ~ docker build -t srijanlabs/init-secret:latest .
-➜  ~ docker push srijanlabs/init-secret:latest
-```
 
 ## Kubernetes implementation
 
@@ -81,7 +74,7 @@ spec:
         emptyDir: {}
       initContainers:
       - name: init-secret
-        image: srijanlabs/init-secret:latest
+        image: clouddrove/aws-secret:1.0
         imagePullPolicy: Always
         command: ["python"]
         args:
@@ -89,7 +82,7 @@ spec:
         env:
         - name: SECRET_FILE_PATH
           value: "/secret/secret.env"
-        - name: SM_DB
+        - name: SSM_DB
           value: "demo-database-secret"
         - name: AWS_REGION
           value: "ap-southeast-1"
